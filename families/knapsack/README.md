@@ -2,7 +2,7 @@
 
 ## Model
 
-Choose a subset of items and assign each chosen item to at most one of $K$
+Choose a subset of items and assign each chosen item to at most one of $m$
 knapsacks. Every knapsack has $d$ resource dimensions (weight, volume, ...),
 each with its own capacity. Maximise total profit.
 
