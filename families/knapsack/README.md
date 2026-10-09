@@ -10,9 +10,9 @@ each with its own capacity. Maximise total profit.
 
 | Symbol | Meaning |
 |---|---|
-| $j \in J = \{1,\dots,n\}$ | items |
-| $k \in K = \{1,\dots,m\}$ | knapsacks |
-| $r \in R = \{1,\dots,d\}$ | resource dimensions |
+| $j \in J = \lbrace 1, \dots, n \rbrace$ | items |
+| $k \in K = \lbrace 1, \dots, m \rbrace$ | knapsacks |
+| $r \in R = \lbrace 1, \dots, d \rbrace$ | resource dimensions |
 
 **Data**
 
@@ -28,34 +28,37 @@ $x_{jk} = 1$ if item $j$ is placed in knapsack $k$, otherwise $0$.
 
 **Formulation**
 
-$$
-\max \sum_{k \in K} \sum_{j \in J} p_j \, x_{jk}
-$$
-
-subject to
+Objective:
 
 $$
-\sum_{j \in J} w_{jr} \, x_{jk} \le c_{kr} \qquad \forall k \in K,\ r \in R \tag{1}
+\max \sum_{k \in K} \sum_{j \in J} p_j x_{jk}
 $$
 
-$$
-\sum_{k \in K} x_{jk} \le 1 \qquad \forall j \in J \tag{2}
-$$
+**(1)** every capacity of every knapsack is respected:
 
 $$
-x_{jk} \in \{0,1\} \qquad \forall j \in J,\ k \in K \tag{3}
+\sum_{j \in J} w_{jr} x_{jk} \le c_{kr} \quad \forall k \in K, \forall r \in R
 $$
 
-(1) respects every capacity in every knapsack, (2) places each item at most
-once, and (3) makes the assignment binary.
+**(2)** every item is placed at most once:
+
+$$
+\sum_{k \in K} x_{jk} \le 1 \quad \forall j \in J
+$$
+
+**(3)** the assignment is binary:
+
+$$
+x_{jk} \in \lbrace 0, 1 \rbrace \quad \forall j \in J, \forall k \in K
+$$
 
 **Special cases**
 
 * $m = 1$: the classical multidimensional knapsack problem (MKP), which is the
   format of the OR-Library `mknap*` instances. The index $k$ drops out and the
   model becomes $\max \sum_j p_j x_j$ s.t. $\sum_j w_{jr} x_j \le c_r$,
-  $x \in \{0,1\}^n$.
-* $d = 1$: the multiple knapsack problem (MKP with several knapsacks, one
+  $x \in \lbrace 0, 1 \rbrace^n$.
+* $d = 1$: the multiple knapsack problem (several knapsacks, one
   constraint each).
 * $m = d = 1$: the plain 0-1 knapsack problem.
 
@@ -102,13 +105,13 @@ python3 generate/generate.py --type chu-beasley --n 250 --m 10 --tightness 0.25 
 | `--type` | profits | `m` |
 |---|---|---|
 | `uncorrelated` | $p_j \sim U[1,R]$ | 1 |
-| `weak` | $p_j \sim U[w_j - R/10,\, w_j + R/10]$, $\ge 1$ | 1 |
+| `weak` | $p_j \sim U[w_j - R/10, w_j + R/10]$, $\ge 1$ | 1 |
 | `strong` | $p_j = w_j + R/10$ | 1 |
-| `chu-beasley` | $p_j = \lfloor \tfrac1m\sum_i a_{ij} + 500\,q_j \rceil$, $q_j\sim U(0,1)$ | $\ge 1$ |
+| `chu-beasley` | $p_j = \lfloor \tfrac1m\sum_i a_{ij} + 500 q_j \rceil$, $q_j\sim U(0,1)$ | $\ge 1$ |
 
 For the first three, $w_j \sim U[1,R]$ (`--range`, default 1000) and the
 capacity is $\lfloor \texttt{--capacity-ratio} \cdot \sum_j w_j \rfloor$
-(default 0.5). For Chu-Beasley, $a_{ij} \sim U\{0,\dots,1000\}$ and
+(default 0.5). For Chu-Beasley, $a_{ij}$ is a uniform integer in $[0, 1000]$ and
 $b_i = \lfloor \alpha \sum_j a_{ij} \rfloor$ with `--tightness` $\alpha$
 (OR-Library uses 0.25, 0.5, 0.75).
 
