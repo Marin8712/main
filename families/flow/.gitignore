@@ -1,0 +1,5 @@
+# Downloaded benchmark instances (see download_instances.py); never commit.
+/instances/
+# Generated instances and labels; regenerate from the seeds.
+/data/
+__pycache__/
